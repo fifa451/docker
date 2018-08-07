@@ -1,0 +1,18 @@
+#!/bin/bash
+DOCKER_CMD=$(basename $0)
+if [ ! -f ansible_version ];then
+   echo "Cannot find ansible version file" 
+   exit 1
+fi
+. ansible_version
+
+docker run -it --rm \
+        -w /app \
+        -v $(pwd):/app \
+        -v "${HOME}/.aws:/root/.aws" \
+        -v "${HOME}/.ssh:/root/.ssh" \
+        -v "${HOME}/vaultpass:/root/vaultpass" \
+        -v "${SSH_AUTH_SOCK}:/ssh-agent" \
+        -e "SSH_AUTH_SOCK=/ssh-agent" \
+        --log-driver none \
+  ansible:${ANSIBLE_VERSION} $DOCKER_CMD $@ 

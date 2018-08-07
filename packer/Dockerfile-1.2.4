@@ -1,0 +1,7 @@
+FROM alpine
+
+
+RUN apk add unzip --no-cache && wget https://releases.hashicorp.com/packer/1.2.4/packer_1.2.4_linux_amd64.zip -O /tmp/packer.zip && \ 
+    mkdir -p /opt/ && \
+    cd /opt/ && /usr/bin/unzip /tmp/packer.zip  && \ 
+    ln -s /opt/packer /usr/bin/packer && rm /tmp/packer.zip 

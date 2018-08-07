@@ -1,0 +1,20 @@
+#!/bin/bash -x
+#DOCKER_CMD="bash"
+DOCKER_CMD=$(basename $0)
+if [ ! -f go_version ];then
+   echo "Cannot find ansible version file"
+   exit 1
+fi
+. go_version
+
+docker run -it --rm \
+        -w /app \
+        -v $(pwd):/app \
+        -v "${HOME}/.aws:/root/.aws" \
+        -v "${HOME}/.ssh:/root/.ssh" \
+        -v "${HOME}/vaultpass:/root/vaultpass" \
+        -v "${SSH_AUTH_SOCK}:/ssh-agent" \
+        -e "SSH_AUTH_SOCK=/ssh-agent" \
+        -e "PATH=$PATH:/usr/local/go/bin" \
+        --log-driver none \
+  go:${GO_VERSION} $DOCKER_CMD $@
