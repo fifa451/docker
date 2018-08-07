@@ -8,7 +8,13 @@ fi
 
 TERRAFORM_VERSION=${1:-0.11.7}
 
+USERNAME=$USER
+USERID=$(id $USER -u)
+GROUPID=$(id $USER -g)
 
-docker build\
+docker build \
 --build-arg TERRAFORM_VERSION=${TERRAFORM_VERSION} \
+--build-arg USERNAME=${USERNAME} \
+--build-arg USERID=${USERID} \
+--build-arg GROUPID=${GROUPID} \
 --rm -t terraform:$TERRAFORM_VERSION .
