@@ -2,7 +2,7 @@
 #git clone https://github.com/docker-library/python.git
 
 python_docker_git_url="https://github.com/docker-library/python.git"
-default_version="3.6"
+default_version="2.7"
 default_baseimage="alpine3.7"
 git_dir="git_python"
 version=${1:-$default_version}
