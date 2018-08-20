@@ -1,2 +1,2 @@
-export ANSIBLE_VERSION='2.4.3'
+export ANSIBLE_VERSION='2.6.2'
 test

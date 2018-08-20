@@ -1,7 +1,7 @@
 #FROM python:3.6
 FROM python:2.7
 
-ARG ANSIBLE_VERSION=2.4.3
+ARG ANSIBLE_VERSION=2.6.2
 ENV ANSIBLE_VERSION ${ANSIBLE_VERSION}
 RUN apk --no-cache add \
     libffi \
@@ -14,6 +14,7 @@ RUN apk --no-cache add \
     pip --no-cache-dir install \
     ansible==${ANSIBLE_VERSION} \
     ansible-modules-hashivault \
+    pycrypto \
     pymssql \
     &&apk del \
     alpine-sdk libffi libffi-dev freetds \

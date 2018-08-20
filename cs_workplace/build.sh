@@ -10,7 +10,8 @@ DOCKER_USER_GROUP=${DOCKER_USER_GROUP:-$(groups|awk '{print $1}')}
 DOCKER_USER_GID=${DOCKER_USER_GID:-${RUN_USER_UID}}
 DOCKER_USER_UID=${DOCKER_USER_UID:-${RUN_USER_GID}}
 # components
-DOKCER_FROM="FROM python:3.6"
+#DOKCER_FROM="FROM python:3.6"
+DOKCER_FROM="FROM python:2.7"
 DOCKER_RUN="RUN apk --no-cache add \\"
 DOCKER_ENV='ENV'
 DOCKER_ARG='ARG'
@@ -18,10 +19,10 @@ DOCKER_RUN_CLEAN="&&apt del \\"
 DOCKER_RUN_ADD_USER="  &&addgroup -g ${DOCKER_USER_GID} ${DOCKER_USER_GROUP} && adduser -D -G ${DOCKER_USER_GROUP} -u ${DOCKER_USER_UID} -h /home/${DOCKER_USER_NAME} ${DOCKER_USER_NAME} && mkdir -p /home/${DOCKER_USER_NAME}/work_dir&& chown ${DOCKER_USER_NAME}:${DOCKER_USER_GROUP} -R /home/${DOCKER_USER_NAME}/work_dir"
 DOCKER_FILE="Dockerfile"
 DOCKER_FILE_LIST="
-/disk/work/docker/awscli/Dockerfile
-/disk/work/docker/packer/Dockerfile
-/disk/work/docker/terraform/Dockerfile
-/disk/work/docker/ansible/Dockerfile
+$HOME/docker/awscli/Dockerfile
+$HOME/docker/packer/Dockerfile
+$HOME/docker/terraform/Dockerfile
+$HOME/docker/ansible/Dockerfile
 "
 TMP_ADD_APK_FILE="add_apk_file"
 TMP_DEL_APK_FILE="del_apk_file"

@@ -1,1 +1,0 @@
-git_python/2.7/alpine3.7/Dockerfile
