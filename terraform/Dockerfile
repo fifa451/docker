@@ -10,12 +10,13 @@ ENV USERID ${USERID}
 ENV GROUPID ${GROUPID}
 RUN apk add --no-cache \
     unzip \
+    ca-certificates \
+    zip \
     &&wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O /tmp/terraform.zip && \
     mkdir -p /opt/ && \
     cd /opt/ && /usr/bin/unzip /tmp/terraform.zip  && \
     ln -s /opt/terraform /usr/bin/terraform && \
     chmod +x  /opt/terraform && \
     rm /tmp/terraform.zip \
-    &&apk del \
-    unzip \
     &&addgroup -g ${GROUPID} ${USERNAME} && adduser -D -G ${USERNAME} -u ${USERID} -h /home/${USERNAME} ${USERNAME} && mkdir -p /home/${USERNAME}/work_dir&& chown ${USERNAME}:${USERNAME} -R /home/${USERNAME}/work_dir
+# &&apk del \

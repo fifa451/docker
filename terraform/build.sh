@@ -6,7 +6,7 @@ if [ ! -f terraform_version ];then
 fi
 . terraform_version
 
-TERRAFORM_VERSION=${1:-0.11.7}
+TERRAFORM_VERSION=${1:-$TERRAFORM_VERSION}
 
 USERNAME=$USER
 USERID=$(id $USER -u)
@@ -18,3 +18,4 @@ docker build \
 --build-arg USERID=${USERID} \
 --build-arg GROUPID=${GROUPID} \
 --rm -t terraform:$TERRAFORM_VERSION .
+
