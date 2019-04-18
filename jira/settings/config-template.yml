@@ -1,0 +1,10 @@
+user: <jira-user>
+password-source: pass
+endpoint: <jira-url>
+
+## custom commands
+custom-commands:
+  - name: mytasks
+    help: display my working tasks
+    script: |-
+      {{jira}} list --query "project = <> AND status = '<>' AND assignee in (<jira-user>) AND issuetype in ('task','sub-task')"
