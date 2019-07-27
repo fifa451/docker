@@ -8,6 +8,7 @@ if [ ! -f $DOCKER_DIR/terraform_version ];then
 fi
 . $DOCKER_DIR/terraform_version
 
+
 docker run -it --rm \
 -u $(id $USER -u) \
 -w /app \
@@ -20,4 +21,3 @@ docker run -it --rm \
 -e "TF_LOG=${TF_DEBUG}" \
 -e "TF_LOG_PATH=tf.log" \
 terraform:${TERRAFORM_VERSION} $DOCKER_CMD $@
-
