@@ -1,0 +1,28 @@
+#!/bin/bash -x
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+
+if [ ! -f $DOCKER_DIR/version ];then
+    echo "Cannot find version file"
+    exit 1
+fi
+# get app info
+. $DOCKER_DIR/version
+
+
+# map drives
+docker run -it --rm \
+--network="host" \
+-u $(id $USER -u) \
+-w /app \
+-v $(pwd):/app \
+-v "${HOME}/.aws:${HOME}/.aws" \
+-v "${HOME}/.kube:${HOME}/.kube" \
+-v "${HOME}/.ssh:${HOME}/.ssh" \
+-v "${HOME}/.cache:${HOME}/.cache" \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+$APP_NAME:${APP_VERSION} $DOCKER_CMD $@

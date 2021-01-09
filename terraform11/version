@@ -1,0 +1,8 @@
+#export TERRAFORM_VERSION="0.12.20"
+export TERRAFORM_VERSION="0.11.14"
+export TERRAFORM_DOCS_VERSION="0.6.0"
+
+#export APP_VERSION="0.12.20"
+export APP_VERSION="0.11.14"
+export APP_NAME="terraform"
+export APP_URL="https://releases.hashicorp.com/${APP_NAME}/${APP_VERSION}/terraform_${APP_VERSION}_linux_amd64.zip"

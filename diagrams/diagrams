@@ -1,0 +1,20 @@
+#!/bin/bash -x
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+if [ ! -f $DOCKER_DIR/version ];then
+    echo "Cannot find version file"
+    exit 1
+fi
+. $DOCKER_DIR/version
+
+docker run -it --rm \
+-w /app \
+-v $(pwd):/app \
+-v "${HOME}/.aws:${HOME}/.aws" \
+-v "${HOME}/.ssh:${HOME}/.ssh" \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+${APP_NAME}:${APP_VERSION} python3 $@

@@ -1,0 +1,3 @@
+export APP_VERSION="3.6.1"
+export APP_NAME="sops"
+export APP_URL="https://github.com/mozilla/sops/releases/download/v${APP_VERSION}/sops-v${APP_VERSION}.linux"

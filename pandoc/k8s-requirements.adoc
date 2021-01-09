@@ -1,0 +1,363 @@
+== Dependent Services
+
+The application service depends on the following services to run.
+
+=== Internal
+
+Internal services detail items that this server role requires to run
+that are internal to the Kubernetes Cluster.
+
+[width="100%",cols="14%,86%",options="header",]
+|===
+|Name |Notes
+|traefik-internal-0 |Incoming Http/Https requests, Traefik is an ingress
+provider which dynamically creates the AWS NLB, security groups.
+|===
+
+=== External
+
+External services detail items that this server role requires to run
+that are external to the Kubernetes Cluster.
+
+[cols=",",options="header",]
+|===
+|Name |Notes
+|do-mssql |External Database
+|ca-redis |Session store
+|===
+
+== Provider Services
+
+The application provides for the following applications/server roles.
+
+=== Internal
+
+Internal services detail items that this server role provides services
+for that are internal to the Kubernetes Cluster.
+
+[cols=",",options="header",]
+|===
+|Name |Notes
+|cs-website |The public front end (not yet extracted to own service)
+|cs-secureweb |Used to obtain customer transaction records
+|===
+
+=== External
+
+External services detail items that this server role provides services
+for that are external to the Kubernetes Cluster.
+
+[cols=",",options="header",]
+|===
+|Name |Notes
+|lm-web |Service not yet migrated to cluster
+|hd-job |Hownd job server
+|===
+
+[width="5%",cols="100%",]
+|===
+|# Resources
+
+|*Format Notes*
+
+|* All resources should directly map to the Kubernetes Resource Kinds,
+Section headings should be human readable * Notes can be used for more
+detailed commentary if required
+
+|# Namespaces
+
+|Namespaces provide a scope for names. Names of resources need to be
+unique within a namespace, but not across namespaces.
+
+|| Name | Notes | | —- | ———————- | | cs | Credit Sense Namespace |
+|===
+
+=== # Config and Storage
+
+=== ConfigMaps
+
+ConfigMaps allow you to decouple configuration artifacts from image
+content to keep containerized applications portable.
+
+[cols=",,",options="header",]
+|===
+|Name |Namespace |Notes
+|freetds |cs |FreeTDS connection mapping
+|===
+
+=== Secrets
+
+A Secret is an object that contains a small amount of sensitive data
+such as a password, a token, or a key.
+
+[cols=",,",options="header",]
+|===
+|Name |Namespace |Notes
+|cs-web-env-secret |cs |Application configuration Configuration files
+|===
+
+=== PersistentVolume
+
+A PersistentVolume (PV) is a piece of storage in the cluster that has
+been provisioned by an administrator. It is a resource in the cluster
+just like a node is a cluster resource.
+
+[cols=",,,,,",options="header",]
+|===
+|PersistentVolumeClaim |ReclaimPolicy |Type |StorageClass |Size |Note
+|cs-web-documents |Retain |aws-efs |EFS |N/A |Storage for supporting
+documents
+|===
+
+=== PersistentVolumeClaims
+
+A PersistentVolumeClaim (PVC) is a request for storage by a user.
+
+[cols=",",options="header",]
+|===
+|Name |Note
+|cs-web |Storage for supporting documents
+|===
+
+[cols="",]
+|===
+|# Workloads
+|===
+
+=== Deployment
+
+A Deployment controller provides declarative updates for Pods and
+ReplicaSets.
+
+[width="100%",cols="12%,48%,4%,5%,31%",options="header",]
+|===
+|Name |Containers by Image Name |HA/# |Ports |Notes
+|cs-web |`nexus-ro-docker.creditsense.io/cs/cs-web:<tag>` |Y/3 |80
+|Application web server
+
+|queHandler |`nexus-ro-docker.creditsense.io/cs/cs-web:<tag>` |Y/3 |N/A
+|Runs the queHandler.php process
+|===
+
+==== HealthCheck _Deployment Sub Section_
+
+[width="100%",cols="11%,27%,4%,16%,9%,10%,7%,9%,7%",options="header",]
+|===
+|Type |Containers by Image Name |http/tcp |Port/Endpoint
+|failureThreshold |initialDelaySeconds |periodSeconds |successThreshold
+|timeoutSeconds
+|readinessProbe |`nexus-ro-docker.creditsense.io/cs/cs-web:<tag>` |http
+|/healthcheck?method=readiness |3 |60 |30 |1 |3
+
+|livenessProbe |`nexus-ro-docker.creditsense.io/cs/cs-web:<tag>` |http
+|/healthcheck |3 |10 |30 |1 |3
+|===
+
+=== DaemonSet
+
+A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As
+nodes are added to the cluster, Pods are added to them.
+
+* This Section is not required
+
+==== HealthCheck _DaemonSet Sub Section_
+
+* This Section is not required
+
+=== StatefulSet
+
+StatefulSet is the workload API object used to manage stateful
+applications.
+
+* This Section is not required
+
+[cols="",]
+|===
+|# Job Types
+|===
+
+=== Job
+
+A job creates one or more pods and ensures that a specified number of
+them successfully terminate.
+
+* This Section is not required
+
+=== CronJob
+
+A Cron Job creates Jobs on a time-based schedule.
+
+_Notes_ CronJob commands must be detailed in the application
+documentation
+
+[cols=",,,",options="header",]
+|===
+|Name |Containers |schedule |Notes
+|RemoveOldUsers |cs-web-php |* 5 * * * |Remove Old Users
+|ProcessReport |cs-web-php |* * * * * |Process any reports
+|BankFormCheck |cs-web-php |* 6,18 * * * |Check the Bank Forms
+|===
+
+Note: if running the ``alpine'' container jobs is not viable, we will
+need to make the ``queHandler'' cronjob into a separate ``Deployment''
+to run the long-running ``queHandler.php'' process. This will not work
+as a k8s cronjob, as there is a maximum time that k8s cronjobs (and
+jobs) can run for.
+
+[cols="",]
+|===
+|# Discovery and load balancing
+|===
+
+=== Ingress
+
+An API object that manages external access to the services in a cluster,
+typically HTTP.
+
+[width="100%",cols="9%,13%,11%,19%,48%",options="header",]
+|===
+|Name |Ingress Class |TrafficType |Hosts |Notes
+|cs-web |traefik |internal-0 |creditsense.com.au |Links deployment to
+traefik ingress provider.
+
+|cs-web |traefik |external-0 |creditsense.com.au |Links deployment to
+traefik ingress provider.
+|===
+
+=== Service
+
+[cols=",,,",options="header",]
+|===
+|Name |Type |Port |Notes
+|cs-web |ClusterIP |80 |Deployment service
+|===
+
+[cols="",]
+|===
+|# High Availablity Configuration
+|===
+
+=== PodDisruptionBudget
+
+A PDB limits the number of pods of a replicated application that are
+down simultaneously from voluntary disruptions.
+
+[cols=",,",options="header",]
+|===
+|Name |DisruptionsAllowed |Notes
+|cs-web |1 |Only Allow one to be removed at any time
+|===
+
+=== HorizontalPodAutoscaler
+
+The Horizontal Pod Autoscaler automatically scales the number of pods.
+
+* This Section will be completed in Story 5 of 5.
+
+[cols="",]
+|===
+|# RBAC
+|===
+
+=== ServiceAccount
+
+In Kubernetes, service accounts are used to provide an identity for
+pods.
+
+* This Section is not required
+
+=== ClusterRole
+
+A role that provides access across namespaces.
+
+* This Section is not required
+
+=== ClusterRoleBinding
+
+Binds a cluster role to a service account.
+
+* This Section is not required
+
+=== Role
+
+A role that provides access within a namespaces.
+
+* This Section is not required
+
+=== RoleBinding
+
+Binds a role to a service account.
+
+* This Section is not required
+
+[cols="",]
+|===
+|# Custom Resources
+|===
+
+* Custom resources are used to define resources that have been added to
+the cluster for example KubeDB.
+
+The following
+https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/[Custom
+Resources] are required.
+
+Custom Resources should follow the format for Kubernetes kinds as above.
+
+=== Custom Resources Definitions
+
+[width="100%",cols="12%,45%,43%",options="header",]
+|===
+|Name |Definition (config file) |Notes
+|Alertmanager
+|0prometheus-operator-0alertmanagerCustomResourceDefinition |Alert
+Manager config see docs/alerting
+
+|Prometheus |0prometheus-operator-0prometheusCustomResourceDefinition
+|Prometheus server docs/crd
+
+|PrometheusRule
+|0prometheus-operator-0prometheusruleCustomResourceDefinition |Create
+prometheus rules docs/crd
+
+|ServiceMonitor
+|0prometheus-operator-0servicemonitorCustomResourceDefinition |Create
+service targets for prometheus to monitor docs/crd
+|===
+
+=== Custom Resource
+
+Custom resources used by this server rolefc
+
+[cols=",,",options="header",]
+|===
+|Name |Resource Type |Notes
+|prometheus-operator |ServiceMonitor |Metrics endpoint for prometheus
+
+|alert-manager |ServiceMonitor |Metrics endpoint for alert manager
+
+|main |Alertmanager |Alert manager for creating alerts
+
+|grafana |ServiceMonitor |Metrics endpoint for grafana
+
+|node-exporter |ServiceMonitor |Metrics endpoint for node-exporter
+
+|kube-state-metrics |ServiceMonitor |Metrics endpoint for
+kube-state-metrics
+
+|prometheus |Prometheus |Deploys prometheus service
+
+|prometheus-rules |PrometheusRule |Deploys base prometheus rules
+
+|prometheus |ServiceMonitor |Who watches the watcher
+
+|kube-apiserver |ServiceMonitor |Monitor kube api
+
+|coredns |ServiceMonitor |Monitor coredns
+
+|kube-controller-manager |ServiceMonitor |Monitor kubernetes controller
+
+|kubelet |ServiceMonitor |Monitor kubernetes applications on nodes
+
+|kube-scheduler |ServiceMonitor |Monitor the scheduler
+|===

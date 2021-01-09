@@ -1,0 +1,25 @@
+#!/bin/bash 
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+. ${DOCKER_DIR}/version
+
+docker run -it --rm \
+-w /app \
+-u $(id $USER -u) \
+-v $(pwd):/app \
+-v ${HOME}/ansible.cfg:${HOME}/.ansible.cfg \
+-v "${HOME}/.aws:${HOME}/.aws" \
+-v "${HOME}/.ssh:${HOME}/.ssh" \
+-v "${HOME}/.gitconfig:${HOME}/.gitconfig" \
+-e "ANSIBLE_HOST_KEY_CHECKING=False" \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-v "${HOME}/.ansible:${HOME}/.ansible" \
+-v "${HOME}/vaultpass:/app/vaultpass" \
+--log-driver none \
+${APP_NAME}:${APP_VERSION} $DOCKER_CMD $@
+
+#-e "ANSIBLE_ROLES_PATH=roles" \

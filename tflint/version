@@ -1,0 +1,3 @@
+export APP_VERSION="0.12.1"
+export APP_NAME="tflint"
+export APP_URL="https://github.com/wata727/tflint/releases/download/v${APP_VERSION}/${APP_NAME}_linux_amd64.zip"

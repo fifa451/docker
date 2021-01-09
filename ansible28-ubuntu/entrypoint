@@ -1,0 +1,5 @@
+#!/bin/bash
+
+dockerd --storage-driver=devicemapper &
+
+$@

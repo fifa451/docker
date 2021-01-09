@@ -1,0 +1,3 @@
+export APP_VERSION="3.10"
+export APP_NAME="beta-base"
+export APK_PKG="bash unzip tar ca-certificates git openssh-client curl jq lastpass-cli"

@@ -1,0 +1,31 @@
+#!/bin/bash
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+if [ ! -f $DOCKER_DIR/version ];then
+    echo "Cannot find terraform version file"
+    exit 1
+    
+fi
+#TF_DEBUG=TRACE
+. $DOCKER_DIR/version
+
+docker run -it --rm \
+--network=host \
+--dns=10.34.1.250 \
+-u $(id $USER -u) \
+-w /app \
+-v $(pwd):/app \
+-v "${HOME}/.aws:${HOME}/.aws" \
+-v "${HOME}/.ssh:${HOME}/.ssh" \
+-v "${HOME}/vaultpass:${HOME}/vaultpass" \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-v "/usr/share/ca-certificates/mozilla/consul.crt:/etc/ssl/certs/consul.crt" \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+-e "TF_LOG=${TF_DEBUG}" \
+-e "TF_LOG_PATH=tf.log" \
+-e "VAULT_ADDR=${VAULT_ADDR}" \
+-e "VAULT_TOKEN=${VAULT_TOKEN}" \
+terraform:${TERRAFORM_VERSION} $DOCKER_CMD $@

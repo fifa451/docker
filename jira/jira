@@ -9,7 +9,6 @@ fi
 
 . $DOCKER_DIR/version
 
-
 docker run -it --rm \
 -u $(id $USER -u) \
 -v $(pwd):/app \

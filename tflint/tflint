@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DOCKER_DIR=$(dirname $0)
+DOCKER_CMD=$(basename $0)
+
+
+if [ ! -f $DOCKER_DIR/version ];then
+    echo "Cannot find version file"
+    exit 1
+fi
+
+# get app info
+. $DOCKER_DIR/version
+
+docker run -it --rm \
+-w /app \
+-v $(pwd):/app \
+-v "${HOME}/.aws:/root/.aws" \
+-v "${HOME}/.ssh:/root/.ssh" \
+-v "${HOME}/vaultpass:/root/vaultpass" \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+-e "TFLINT_LOG=debug" \
+--log-driver none \
+${APP_NAME}:${APP_VERSION} $DOCKER_CMD $@

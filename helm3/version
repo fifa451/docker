@@ -1,0 +1,3 @@
+export APP_VERSION="3.4.1"
+export APP_NAME="helm"
+export APP_URL="https://get.helm.sh/helm-v${APP_VERSION}-linux-amd64.tar.gz"

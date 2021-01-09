@@ -1,0 +1,5 @@
+docker run \
+-v /run/docker.sock:/run/docker.sock \
+-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+--privileged \
+-it --rm ansible:latest bash

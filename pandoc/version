@@ -1,0 +1,2 @@
+export APP_VERSION="2.9.2"
+export APP_NAME="pandoc"

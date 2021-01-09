@@ -1,0 +1,2 @@
+export APP_NAME=bundle
+export APP_VERSION=3.10

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+if [ ! -f $DOCKER_DIR/version ];then
+    echo "Cannot find terraform version file"
+    exit 1
+
+fi
+
+USER_ID=$(id -u);
+GROUP_ID=$(id -g);
+
+docker run -it --rm \
+    -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
+    --volume=${XDG_RUNTIME_DIR}/pulse:${XDG_RUNTIME_DIR}/pulse \
+    --volume="${HOME}/.config/tizonia":/home/tizonia/.config/tizonia \
+    --volume "${HOME}/.config/pulse/cookie":/home/tizonia/.config/pulse/cookie \
+    --name tizonia \
+    tizonia/docker-tizonia "$@";

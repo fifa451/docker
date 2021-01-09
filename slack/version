@@ -1,0 +1,3 @@
+APP_VERSION="3.3.8"
+APP_URL="https://downloads.slack-edge.com/linux_releases/slack-desktop-${APP_VERSION}-amd64.deb"
+APP_NAME=slack

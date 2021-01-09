@@ -1,0 +1,31 @@
+#!/bin/bash 
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+. ${DOCKER_DIR}/version
+
+#--privileged \
+#-v "${HOME}/.docker/config.json:${HOME}/.docker/config.json" \
+#-u $(id $USER -u) \
+#${APP_NAME}:${APP_VERSION} $DOCKER_CMD $@
+docker run -it --rm \
+-w /app/ \
+--privileged \
+-v $(pwd):/app \
+-v "${HOME}/vaultpass:/tmp/vaultpass" \
+-v "${HOME}/.aws:${HOME}/.aws" \
+-v "${HOME}/.ssh:/root/.ssh" \
+-v /run/docker.sock:/run/docker.sock \
+-v /run/lock:/run/lock \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+-e "NEXUS_RO_PASS=i1H64pCyNmuf" \
+-e "NEXUS_RO_USER=cs-ro" \
+-e "ANSIBLE_HOST_KEY_CHECKING=False" \
+-e "ANSIBLE_ROLES_PATH=/app" \
+-e "ANSIBLE_VAULT_PASSWORD_FILE=/tmp/vaultpass" \
+-e "MOLECULE_DEBUG=false" \
+--log-driver none \
+ansible-test $DOCKER_CMD $@

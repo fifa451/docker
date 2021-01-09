@@ -1,0 +1,22 @@
+#!/bin/bash
+SCRIPT_NAME=$(realpath $0)
+
+DOCKER_DIR=$(dirname ${SCRIPT_NAME})
+DOCKER_CMD=$(basename ${SCRIPT_NAME})
+
+. ${DOCKER_DIR}/version
+
+docker run -it --rm \
+-w /app \
+-u $(id $USER -u) \
+-v $(pwd):/app \
+-v "${HOME}/.aws:/root/.aws" \
+-v "${HOME}/.ssh:/app/.ssh" \
+-v "${HOME}/vaultpass:${HOME}/vaultpass" \
+-v "${SSH_AUTH_SOCK}:/ssh-agent" \
+-v /tmp/:/tmp \
+-e "SSH_AUTH_SOCK=/ssh-agent" \
+-e "ANSIBLE_VAULT_PASSWORD_FILE=${HOME}/vaultpass" \
+-e "ANSIBLE_HOST_KEY_CHECKING=False" \
+--log-driver none \
+${APP_NAME}:${APP_VERSION} $DOCKER_CMD $@
