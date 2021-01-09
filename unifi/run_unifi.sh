@@ -1,12 +1,20 @@
-#!/bin/sh
-docker run \
+#!/bin/bash
+if [ ! -f unifi_version ];then
+    echo "Cannot find unifi version"
+    exit 1
+fi
+
+. unifi_version
+
+HOST_IP="192.168.1.202"
+UNIFI_VERSION=${1:-$UNIFI_VERSION}
+
+docker run -d \
         --network=unifi-vlan \
-        --rm \
-        --init \
+        --ip=${HOST_IP} \
         -p 8080:8080 \
         -p 8443:8443 \
         -p 3478:3478/udp   -p 10001:10001/udp \
         -e TZ='Australia/Brisbane'\
-        -v ~/work/unifi/unifi:/unifi \
-        --name unifi jacobalberty/unifi:stable
-
+        -v /opt/unifi/data:/unifi \
+        --name unifi unifi:${UNIFI_VERSION}
