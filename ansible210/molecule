@@ -6,7 +6,6 @@ DOCKER_CMD=$(basename ${SCRIPT_NAME})
 
 . ${DOCKER_DIR}/version
 
-#${APP_NAME}:${APP_VERSION} $DOCKER_CMD $@
 
 #-u $(id $USER -u) \
 docker run -it --rm \

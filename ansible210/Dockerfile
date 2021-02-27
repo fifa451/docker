@@ -17,7 +17,6 @@ RUN apk --no-cache add \
     openssl-dev \
     openssh-client\
     py3-virtualenv \
-    git \
     alpine-sdk \
     && python3 -m venv $VIRTUAL_ENV \
     && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - \
@@ -55,4 +54,6 @@ RUN apk add \
 COPY --from=base /opt/ansible /opt/ansible
 COPY --from=quay.io/helmpack/chart-testing:latest /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/
 WORKDIR /app
-CMD [ "sleep","infinitly" ]
+USER ansible
+
+CMD [ "sleep","infinity" ]
