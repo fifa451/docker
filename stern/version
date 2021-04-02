@@ -1,0 +1,3 @@
+export APP_VERSION="1.11.0"
+export APP_NAME="stern"
+export APP_URL="https://github.com/wercker/stern/releases/download/${APP_VERSION}/stern_linux_amd64"

@@ -35,7 +35,7 @@ if [ $? -eq 0 ]
 then
     echo "Setup Symbolic link"
     echo
-    [ -f /usr/local/bin/${APP_NAME} ]|| sudo ln -s  $(pwd)/${APP_NAME} /usr/local/bin/${APP_NAME}
+    [ -f /usr/local/bin/${APP_NAME} ] || sudo ln -s  $(pwd)/${APP_NAME} /usr/local/bin/${APP_NAME}
     echo
     echo "You can add following alias to your ~/.bash_aliases"
     echo
